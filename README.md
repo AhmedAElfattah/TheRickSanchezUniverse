@@ -35,6 +35,7 @@ The Rick Sanchez Universe is an iOS application that displays a list of characte
 
 ## Assumptions and Decisions
 
+- **Design**: The design follows the prototype guideline but is not exactly a copy of it. Due to time constraints and lack of debuggable design ie. (Figma, Sketch) the design implemented might have slight discrepancies with the prototype.
 - **No Storyboards**: The application is built programmatically without the use of storyboards to provide more control over the view hierarchy and transitions.
 - **SwiftUI Integration**: SwiftUI is used for defining the `CharacterCell` view, providing a modern and declarative way to build UI components.
 - **Image Caching**: Implemented a simple in-memory cache using `NSCache` to store downloaded images, improving performance by avoiding redundant network requests.
