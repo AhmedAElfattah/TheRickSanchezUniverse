@@ -8,29 +8,66 @@
 import XCTest
 @testable import TheRickSanchezUniverse
 
-final class TheRickSanchezUniverseTests: XCTestCase {
+class CharacterListViewModelTests: XCTestCase {
+    var viewModel: CharactersListViewModel!
+    var mockNetworkManager: MockNetworkManager!
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    override func setUp() {
+        super.setUp()
+        mockNetworkManager = MockNetworkManager()
+        viewModel = CharactersListViewModel(charactersListAppState: .initial, networkManager: mockNetworkManager, stateDidUpdate: nil)
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    override func tearDown() {
+        viewModel = nil
+        mockNetworkManager = nil
+        super.tearDown()
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    func testInitialState() {
+        XCTAssertEqual(viewModel.charactersListAppState, .initial)
     }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    
+    func testFetchCharactersFromFile() {
+            let expectation = self.expectation(description: "Fetch Characters From File")
+
+            viewModel.getCharactersList(with: "mockCharacters")
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                var retrievedCharacters: [CharacterRepresentation] = []
+                if case let .success(characters) = self.viewModel.charactersListAppState {
+                    retrievedCharacters = characters
+                }
+                XCTAssertFalse(retrievedCharacters.isEmpty)
+                XCTAssertEqual(retrievedCharacters.count, 14)
+                XCTAssertEqual(retrievedCharacters.first?.name, "Abradolf Lincler")
+                XCTAssertEqual(retrievedCharacters.last?.name, "Ants in my Eyes Johnson")
+                expectation.fulfill()
+            }
+
+            waitForExpectations(timeout: 2.0, handler: nil)
         }
-    }
+    
+    func testEmptyFile() {
+            let expectation = self.expectation(description: "Fetch Characters From File")
+
+            viewModel.getCharactersList(with: "EmptyCharactersList")
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                var retrievedCharacters: [CharacterRepresentation] = []
+                if case let .success(characters) = self.viewModel.charactersListAppState {
+                    retrievedCharacters = characters
+                }
+                XCTAssertTrue(retrievedCharacters.isEmpty)
+                XCTAssertEqual(retrievedCharacters.count, 0)
+                XCTAssertNil(retrievedCharacters.first?.name)
+                
+                XCTAssertNil(retrievedCharacters.last?.name)
+                expectation.fulfill()
+            }
+
+            waitForExpectations(timeout: 2.0, handler: nil)
+        }
 
 }

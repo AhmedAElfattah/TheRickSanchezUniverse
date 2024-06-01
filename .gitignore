@@ -1,0 +1,14 @@
+# Xcode
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xcworkspace
+
+# Swift Package Manager
+.build/
+Packages
+Package.pins
+
+# CocoaPods
+Pods/
+Podfile.lock

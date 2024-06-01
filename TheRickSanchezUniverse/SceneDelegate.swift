@@ -13,10 +13,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let scene = (scene as? UIWindowScene) else { return }
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.windowScene = scene
+
+        // Create a UINavigationController with CharactersListViewController as its root view controller
+       
+
+        let viewModel = CharactersListViewModel(charactersListAppState: .initial, networkManager: NetworkManager.shared, stateDidUpdate: nil)
+        let characterFilterViewModel = CharacterFilterViewModel()
+        let charactersListVC = CharactersListViewController(viewModel: viewModel, characterFilterViewModel: characterFilterViewModel)
+
+        let navigationController = UINavigationController(rootViewController: charactersListVC)
+        window?.rootViewController = navigationController
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
